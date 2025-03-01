@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres
+    environment:
+    - POSTGRES_DB=${POSTGRES_DB}
+    - POSTGRES_USER=${POSTGRES_USER}
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  django_app:
+    container_name: Django_app
+    build:
+      context: "./Ecommerce_app"
+      dockerfile: DockerFile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+    - ./Ecommerce_app:/code
+    ports:
+    - "8000:8000"
+    depends_on:
+    - db
