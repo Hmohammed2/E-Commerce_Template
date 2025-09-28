@@ -1,19 +1,45 @@
 services:
   db:
     image: postgres
+    ports:
+      - "5432:5432"
     environment:
     - POSTGRES_DB=${POSTGRES_DB}
     - POSTGRES_USER=${POSTGRES_USER}
     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-  django_app:
-    container_name: Django_app
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+  frontend:
+    container_name: Nextjs_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/my-app:/app
+      - /app/node_modules
+    build:
+      context: "./frontend/my-app"
+      dockerfile: Dockerfile
+    environment:
+      - WATCHPACK_POLLING=true
+    command: npm run dev -- -H 0.0.0.0
+  django:
+    container_name: django-backend
     build:
       context: "./Ecommerce_app"
       dockerfile: DockerFile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     volumes:
-    - ./Ecommerce_app:/code
+      - ./Ecommerce_app:/code
     ports:
-    - "8000:8000"
+      - "8000:8000"
+    environment:
+      - DJANGO_ENV=development
+      - PYTHONUNBUFFERED=1
+      - DJANGO_WATCH=1
     depends_on:
-    - db
+      - db
+volumes:
+  postgres_data:

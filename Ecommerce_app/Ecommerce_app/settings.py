@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +20,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zqh17d!1+t@2jvh7=jxry$s4^ivbyrh-$)4@%r!44%vgrw#zdq'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: keep the secret key used in production secret!
+if DEBUG == "True":
+    SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+else:
+    SECRET_KEY = 'django-insecure-zqh17d!1+t@2jvh7=jxry$s4^ivbyrh-$)4@%r!44%vgrw#zdq'
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+if os.environ.get("DJANGO_WATCH") == "1":
+    # Forces Django to use polling instead of relying on inotify
+    os.environ["DJANGO_AUTORELOAD_MODE"] = "stat"
+
+# if DEBUG == "False":
+#     ALLOWED_HOSTS = ["arcadesticklabs.com"]
+# else:
+ALLOWED_HOSTS = ["*"]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000", # Next.js dev server
+    "https://frontend:3000", # Next.js docker
+    "https://arcadesticklabs.com"# Production URL
+]
 
 
 # Application definition
@@ -37,9 +58,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "rest_framework",
+    "corsheaders",
+    'marketing',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,14 +94,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Ecommerce_app.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'API_Ecommerce',
+        'USER': 'postgres',
+        'PASSWORD': 'N00bfighter123@',
+        'HOST': 'db',  # this matches the docker-compose service name
+        'PORT': '5432',
     }
 }
 

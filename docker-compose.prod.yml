@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+
+  django_app:
+    build:
+      context: ./Ecommerce_app
+      dockerfile: Dockerfile
+    command: gunicorn Ecommerce_app.wsgi:application --bind 0.0.0.0:8000 --workers=4
+    volumes:
+      - ./Ecommerce_app:/code
+      - static_volume:/code/static
+      - media_volume:/code/media
+    depends_on:
+      - db
+    expose:
+      - "8000"
+    networks:
+      - app_net
+
+  frontend:
+    build:
+      context: ./frontend/my-app
+      dockerfile: Dockerfile
+    networks:
+      - app_net
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/code/static
+      - media_volume:/code/media
+    ports:
+      - "80:80"
+      # - "443:443"   # enable later if you add TLS certs
+    depends_on:
+      - django_app
+      - frontend
+    networks:
+      - app_net
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  app_net:
