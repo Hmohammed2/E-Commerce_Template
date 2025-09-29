@@ -25,7 +25,7 @@ services:
     depends_on:
       - db
     expose:
-      - "7011"
+      - "7011:8000"
     networks:
       - app_net
 
@@ -35,7 +35,7 @@ services:
       context: ./frontend/my-app
       dockerfile: Dockerfile.prod
     ports:
-      - "7010:7010"
+      - "7010:3000"
     environment:
       - NODE_ENV=production
     networks:
