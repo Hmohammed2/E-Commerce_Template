@@ -5,6 +5,8 @@ import { toast, Toaster } from "react-hot-toast";
 
 type WaitlistFormState = 'idle' | 'loading' | 'success' | 'error';
 
+const baseUrl = process.env.NEXT_PUBLIC_API_URL_CLIENT;
+
 export default function WaitlistForm() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<WaitlistFormState>("idle");
@@ -13,7 +15,7 @@ export default function WaitlistForm() {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch('http://localhost:8000/api/waitlist/', {
+      const res = await fetch(`${baseUrl}/api/waitlist/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -26,9 +28,8 @@ export default function WaitlistForm() {
         toast('You are already on the waitlist ✨');
       } else {
         toast.success('Thanks for joining the waitlist 🎉');
+        setStatus('success');
       }
-
-      setStatus('success');
       setEmail('');
     } catch (err) {
       console.error(err);

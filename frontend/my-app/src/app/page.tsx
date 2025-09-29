@@ -2,7 +2,7 @@ import ProductCarousel from "@/components/ProductCarousel";
 import Navbar from "@/components/navbar";
 import WaitlistForm from "@/components/WaitListForm";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.NEXT_PUBLIC_API_URL_SERVER;
 
 // Fetch products server-side
 async function getProducts() {
@@ -85,6 +85,25 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* How It Works */} 
+        <section id="how" className="bg-gradient-to-br from-pink-50 via-white to-indigo-50"> 
+        <div className="max-w-4xl mx-auto px-6 py-16 text-center"> 
+          <h2 className="text-2xl font-semibold text-gray-900">How it works</h2> 
+          <ol className="mt-6 space-y-3 text-gray-700 list-decimal list-inside text-left max-w-md mx-auto"> 
+            <li>Join the waitlist to get launch offers.</li> 
+            <li>Preorder starter kits or individual parts.</li> 
+            <li>Build your arcade stick with trusted components.</li> 
+            </ol> 
+            {/* Preorder disclaimer banner */} 
+            <div className="mt-8 max-w-md mx-auto rounded-lg bg-yellow-50 border border-yellow-200 p-4 flex items-start gap-3 text-left"> 
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0"> 
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0 3.75h.008v.008H12V16.5zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> 
+              </svg> <p className="text-sm text-yellow-800"> 
+                <span className="font-medium">Note:</span> Preorders help us secure stock — shipping begins at launch. </p> 
+                </div>
+                 </div> 
+            </section>
       </main>
 
       {/* Footer */}

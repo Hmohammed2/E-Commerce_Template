@@ -19,9 +19,7 @@ services:
     build:
       context: "./frontend/my-app"
       dockerfile: Dockerfile
-    environment:
-      - WATCHPACK_POLLING=true
-    command: npm run dev -- -H 0.0.0.0
+    command: npm run dev
   django:
     container_name: django-backend
     build:

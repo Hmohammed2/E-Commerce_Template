@@ -5,7 +5,7 @@ import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { toast } from "react-hot-toast";
 
-const baseUrl = "http://localhost:8000"; // adjust if needed for production
+const baseUrl = process.env.NEXT_PUBLIC_API_URL_CLIENT;
 
 type CardProps = {
   id: number;
@@ -67,7 +67,7 @@ const Card: React.FC<CardProps> = ({ id, title, subtitle, price, image }) => {
       <div className="mt-3 flex flex-col flex-1">
         <h3 className="font-semibold text-gray-900">{title}</h3>
         <p className="text-sm text-gray-500">{subtitle}</p>
-        <span className="mt-auto font-medium text-gray-800">{price}</span>
+        <span className="mt-auto font-medium text-gray-800">£{price}</span>
 
         {/* Preorder Button triggers Modal */}
         <Dialog.Root>
@@ -107,7 +107,7 @@ const Card: React.FC<CardProps> = ({ id, title, subtitle, price, image }) => {
               <Dialog.Description className="text-sm text-gray-600 mt-1">
                 {subtitle}
               </Dialog.Description>
-              <p className="mt-2 text-pink-600 font-bold">{price}</p>
+              <p className="mt-2 text-pink-600 font-bold"> Est. Price: £{price}</p>
 
               {/* Quantity selector */}
               <div className="mt-4 flex items-center gap-2">
