@@ -97,9 +97,9 @@ WSGI_APPLICATION = 'Ecommerce_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.get("POSTGRES_DB"),
-        'USER': os.get("POSTGRES_USER"),
-        'PASSWORD': os.get("POSTGRES_PASSWORD"),
+        'NAME': os.getenv("POSTGRES_DB"),
+        'USER': os.getenv("POSTGRES_USER"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
         'HOST': 'db',  # this matches the docker-compose service name
         'PORT': '5432',
     }
@@ -141,6 +141,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
