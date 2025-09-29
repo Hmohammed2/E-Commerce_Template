@@ -20,13 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv("DJANGO_MODE") == "production":
+if os.getenv("DJANGO_ENV") == "production":
     DEBUG = False
 else:
     DEBUG = True
 
 if DEBUG == "False":
-    ALLOWED_HOSTS = ["arcadesticklabs.com"]
+    ALLOWED_HOSTS = ["arcadesticklabs"]
     SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 else:
     ALLOWED_HOSTS = ["*"]
@@ -97,9 +97,9 @@ WSGI_APPLICATION = 'Ecommerce_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'API_Ecommerce',
-        'USER': 'postgres',
-        'PASSWORD': 'N00bfighter123@',
+        'NAME': os.get("POSTGRES_DB"),
+        'USER': os.get("POSTGRES_USER"),
+        'PASSWORD': os.get("POSTGRES_PASSWORD"),
         'HOST': 'db',  # this matches the docker-compose service name
         'PORT': '5432',
     }

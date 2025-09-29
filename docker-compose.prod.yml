@@ -1,19 +1,22 @@
 services:
   db:
+    container_name: postgres_db
     image: postgres:15
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DJANGO_ENV: production
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_net
 
   django_app:
+    container_name: django-backend
     build:
       context: ./Ecommerce_app
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     command: gunicorn Ecommerce_app.wsgi:application --bind 0.0.0.0:8000 --workers=4
     volumes:
       - ./Ecommerce_app:/code
@@ -27,9 +30,14 @@ services:
       - app_net
 
   frontend:
+    container_name: Nextjs_frontend
     build:
       context: ./frontend/my-app
       dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
     networks:
       - app_net
 
