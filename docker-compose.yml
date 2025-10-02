@@ -24,7 +24,7 @@ services:
     container_name: django-backend
     build:
       context: "./Ecommerce_app"
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     command: >
       sh -c "python manage.py makemigrations &&
              python manage.py migrate &&
@@ -34,6 +34,9 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DJANGO_ENV=development
       - PYTHONUNBUFFERED=1
       - DJANGO_WATCH=1
