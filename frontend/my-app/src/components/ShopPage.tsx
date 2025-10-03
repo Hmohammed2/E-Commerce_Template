@@ -7,18 +7,19 @@ import { useCart } from "@/store/useCart"; // Zustand store
 import { cartItem } from "@/types/cart";
 import { useProducts } from "@/hooks/useProduct"; // React Query hook
 import type { Product } from "@/types/product";
+import { getImageUrl } from "@/library/getImageUrl";
+import Link from "next/link";
 
 export default function ShopPage() {
   // ✅ Zustand cart state
-  const { addItem, getCartItems, getTotalItems, getTotalPrice, isInCart } =
-    useCart();
+  const { addItem, isInCart } = useCart();
 
   // ✅ React Query fetch
   const { data: products = [], isLoading, isError } = useProducts();
 
   // Filters
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [availability, setAvailability] = useState<string>("all");
 
   // Extract categories dynamically
@@ -28,13 +29,15 @@ export default function ShopPage() {
   const filteredProducts = products.filter((p: Product) => {
     const inCategory =
       selectedCategory === "all" ? true : p.category === selectedCategory;
+
     const inPriceRange = p.price >= priceRange[0] && p.price <= priceRange[1];
+
     const matchesAvailability =
       availability === "all"
         ? true
         : availability === "available"
-          ? p.available
-          : !p.available;
+          ? p.stock >= 1
+          : p.stock === 0;
 
     return inCategory && inPriceRange && matchesAvailability;
   });
@@ -43,7 +46,7 @@ export default function ShopPage() {
   const handleAddToCart = (product: Product) => {
     const item: cartItem = {
       id: product.id,
-      title: product.title,
+      title: product.name,
       price: product.price,
       image: product.image,
       quantity: 1,
@@ -84,7 +87,7 @@ export default function ShopPage() {
           <input
             type="range"
             min={0}
-            max={1000}
+            max={100}
             step={10}
             value={priceRange[1]}
             onChange={(e) =>
@@ -133,39 +136,51 @@ export default function ShopPage() {
                     transition={{ duration: 0.3 }}
                     className="bg-white shadow-md rounded-xl overflow-hidden hover:shadow-lg transition flex flex-col"
                   >
-                    <div className="relative w-full h-48">
-                      <Image
-                        src={product.image}
-                        alt={product.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="p-4 flex-1 flex flex-col">
-                      <h3 className="text-lg font-semibold">{product.title}</h3>
-                      <p className="text-[#E01D42] font-bold">
-                        £{product.price}
-                      </p>
-                      <p
-                        className={`text-sm ${
-                          product.available ? "text-green-600" : "text-red-500"
-                        }`}
-                      >
-                        {product.available ? "In Stock" : "Out of Stock"}
-                      </p>
+                    {/* 👇 Entire card is wrapped in Link */}
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="flex flex-col flex-1"
+                    >
+                      <div className="relative w-full h-48">
+                        <Image
+                          src={getImageUrl(product.image)}
+                          alt={product.name}
+                          width={200}
+                          height={200}
+                          className="object-contain mx-auto"
+                        />
+                      </div>
+                      <div className="p-4 flex-1 flex flex-col">
+                        <h3 className="text-lg font-semibold">
+                          {product.name}
+                        </h3>
+                        <p className="text-[#E01D42] font-bold">
+                          £{product.price}
+                        </p>
+                        <p
+                          className={`text-sm ${
+                            product.stock >= 1
+                              ? "text-green-600"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {product.stock >= 1 ? "In Stock" : "Out of Stock"}
+                        </p>
+                      </div>
+                    </Link>
 
-                      {/* ✅ Add to Cart */}
-                      <button
-                        onClick={() => handleAddToCart(product)}
-                        className={`mt-auto w-full py-2 px-4 rounded-lg font-semibold transition ${
-                          product.available
-                            ? "bg-[#14485A] text-white hover:bg-[#0e2f3d]"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        }`}
-                      >
-                        {isInCart(product.id) ? "Add More" : "Add to Basket"}
-                      </button>
-                    </div>
+                    {/* ✅ Keep the Add to Cart outside the link to avoid accidental clicks */}
+                    <button
+                      onClick={() => handleAddToCart(product)}
+                      disabled={product.stock === 0}
+                      className={`mt-auto w-full py-2 px-4 rounded-lg font-semibold transition ${
+                        product.stock >= 1
+                          ? "bg-[#14485A] text-white hover:bg-[#0e2f3d]"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                    >
+                      {isInCart(product.id) ? "Add More" : "Add to Basket"}
+                    </button>
                   </motion.div>
                 ))}
               </div>

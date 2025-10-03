@@ -40,11 +40,34 @@ if os.environ.get("DJANGO_WATCH") == "1":
     os.environ["DJANGO_AUTORELOAD_MODE"] = "stat"
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", # Next.js dev server
-    "https://frontend:3000", # Next.js docker
-    "https://arcadesticklabs.com"# Production URL
+    "http://localhost:3000",  # Next.js dev server
+    "http://127.0.0.1:3000",  # Sometimes needed for local dev
+    "https://arcadesticklabs.co.uk",  # Production frontend
 ]
 
+# Allow cookies/authorization headers in cross-origin requests
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://arcadesticklabs.co.uk",  # prod
+]
+
+# Logging configuration
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
 
 # Application definition
 
@@ -58,6 +81,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     'marketing',
+    "retail"
 ]
 
 MIDDLEWARE = [
@@ -147,3 +171,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Stripe settings
+
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")

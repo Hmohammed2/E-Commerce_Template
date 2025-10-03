@@ -3,14 +3,9 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Card from "./card"; // your Card component
+import type { Product } from "@/types/product";
 
-type CardProps = {
-  id: number;
-  title: string;
-  subtitle: string;
-  price: string;
-  imageName?: string;
-};
+interface CardProps extends Product {}
 
 interface CarouselProps {
   products: CardProps[];

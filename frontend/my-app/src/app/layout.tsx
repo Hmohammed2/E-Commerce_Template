@@ -68,9 +68,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        <QueryProvider>{children}</QueryProvider>
-        <Footer />
+        <QueryProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </QueryProvider>
       </body>
     </html>
   );

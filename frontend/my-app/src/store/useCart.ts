@@ -86,7 +86,6 @@ export const useCart = create<CartState>()(
     }),
     {
       name: "cart-storage", // unique name
-      getStorage: () => localStorage, // (optional) by default, 'localStorage' is used
     }
   )
 );

@@ -4,18 +4,13 @@ import { useState } from "react";
 import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { toast } from "react-hot-toast";
+import type { Product } from "@/types/product";
+
+interface CardProps extends Product {}
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL_CLIENT;
 
-type CardProps = {
-  id: number;
-  title: string;
-  subtitle: string;
-  price: string;
-  image?: string; // e.g., "product1.jpg"
-};
-
-const Card: React.FC<CardProps> = ({ id, title, subtitle, price, image }) => {
+const Card: React.FC<CardProps> = ({ id, name, description, price, image }) => {
   const [quantity, setQuantity] = useState(1);
   const [email, setEmail] = useState("");
 
@@ -39,7 +34,7 @@ const Card: React.FC<CardProps> = ({ id, title, subtitle, price, image }) => {
       if (!res.ok) throw new Error("Failed to submit preorder");
 
       const data = await res.json();
-      toast.success(`Preordered ${data.quantity} of ${title} ✅`);
+      toast.success(`Preordered ${data.quantity} of ${name} ✅`);
       setEmail("");
       setQuantity(1);
     } catch (err) {
@@ -57,7 +52,7 @@ const Card: React.FC<CardProps> = ({ id, title, subtitle, price, image }) => {
             width={200}
             height={200}
             src={`${image}`}
-            alt={title}
+            alt={name}
             className="object-contain"
           />
         )}
@@ -65,8 +60,8 @@ const Card: React.FC<CardProps> = ({ id, title, subtitle, price, image }) => {
 
       {/* Content */}
       <div className="mt-3 flex flex-col flex-1">
-        <h3 className="font-semibold text-gray-900">{title}</h3>
-        <p className="text-sm text-gray-500">{subtitle}</p>
+        <h3 className="font-semibold text-gray-900">{name}</h3>
+        <p className="text-sm text-gray-500">{description}</p>
         <span className="mt-auto font-medium text-gray-800">£{price}</span>
 
         {/* Preorder Button triggers Modal */}
@@ -93,7 +88,7 @@ const Card: React.FC<CardProps> = ({ id, title, subtitle, price, image }) => {
                 {image && (
                   <Image
                     src={`${image}`}
-                    alt={title}
+                    alt={name}
                     width={300}
                     height={300}
                     className="object-contain rounded-lg"
@@ -102,12 +97,15 @@ const Card: React.FC<CardProps> = ({ id, title, subtitle, price, image }) => {
               </div>
 
               <Dialog.Title className="text-lg font-semibold text-gray-900">
-                {title}
+                {name}
               </Dialog.Title>
               <Dialog.Description className="text-sm text-gray-600 mt-1">
-                {subtitle}
+                {description}
               </Dialog.Description>
-              <p className="mt-2 text-pink-600 font-bold"> Est. Price: £{price}</p>
+              <p className="mt-2 text-pink-600 font-bold">
+                {" "}
+                Est. Price: £{price}
+              </p>
 
               {/* Quantity selector */}
               <div className="mt-4 flex items-center gap-2">

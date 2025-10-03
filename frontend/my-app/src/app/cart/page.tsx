@@ -3,24 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/store/useCart";
+import { getImageUrl } from "@/library/getImageUrl";
 
 export default function CartPage() {
-  const {
-    items,
-    removeItem,
-    clearCart,
-    updateQuantity,
-    getCartItems,
-    getTotalItems,
-    getTotalPrice,
-  } = useCart();
+  const { items, removeItem, clearCart, updateQuantity, getTotalPrice } =
+    useCart();
 
   if (items.length === 0) {
     return (
-      <div className="max-w-3xl mx-auto py-16 text-center">
+      <div className="min-h-screen max-w-3xl mx-auto py-16 text-center">
         <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
         <Link
-          href="/products"
+          href="/shop"
           className="text-blue-600 hover:underline font-medium"
         >
           Continue shopping
@@ -30,7 +24,25 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4">
+    <div className="min-h-screen max-w-7xl mx-auto py-12 px-4">
+      {/* Notice Bar */}
+      <div className="mb-6 rounded-md bg-yellow-100 border border-yellow-300 p-4 text-sm text-yellow-900 text-center">
+        <p>
+          <strong>Note:</strong> As of now we are only supplying curated
+          products to fellow enthusiasts in the{" "}
+          <span className="font-semibold">United Kingdom</span>. This may change
+          in the near future once we scale up. If you’d like to discuss orders
+          outside the UK, please email{" "}
+          <a
+            href="mailto:sales@arcadesticklabs.co.uk"
+            className="underline font-medium text-yellow-800 hover:text-yellow-900"
+          >
+            sales@arcadesticklabs.co.uk
+          </a>
+          .
+        </p>
+      </div>
+
       <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
 
       <div className="space-y-6">
@@ -42,19 +54,19 @@ export default function CartPage() {
             <div className="flex items-center gap-4">
               {item.image && (
                 <Image
-                  src={item.image}
+                  src={getImageUrl(item.image)}
                   alt={item.title}
-                  width={80}
-                  height={80}
-                  className="rounded-md border"
+                  width={200}
+                  height={100}
+                  className="rounded-md border mx-auto object-contain"
                 />
               )}
-              <div>
+              <div className="ml-10">
                 <p className="font-medium">{item.title}</p>
                 {item.variantId && (
                   <p className="text-sm text-gray-500">{item.variantId}</p>
                 )}
-                <p className="text-gray-700">£{item.price.toFixed(2)}</p>
+                <p className="text-gray-700">£{item.price}</p>
               </div>
             </div>
 

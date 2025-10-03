@@ -1,12 +1,28 @@
+export type Category = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
+export type Colour = {
+  id: number;
+  name: string;
+};
+
 export type Product = {
   id: number;
-  title: string;
-  subtitle: string;
-  price: number; // DRF returns DecimalField as string
-  image: string;
-  category?: string;
-  available?: boolean;
+  name: string; // matches Django's "name"
   slug: string;
-  description?: string;
-  variantId?: number; // Optional variant ID
+  category: Category; // nested object
+  description?: string; // can be blank
+  price: number;
+  stock: number; // PositiveIntegerField
+  image: string;
+  colours: string[] | Colour[];
+  // 👆 Depending on how your serializer returns it:
+  // - ArrayField/JSONField → ["red", "blue"]
+  // - ManyToManyField with serializer → [{id:1,name:"red"}, {id:2,name:"blue"}]
+
+  created_at: string; // ISO datetime
+  updated_at: string; // ISO datetime
 };

@@ -20,9 +20,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('retail/', include('retail.urls')),
+    path('api/', include('retail.urls')),
     path('admin/', admin.site.urls),
-    path("api/", include("marketing.urls")),
+    path("marketing/", include("marketing.urls")),
 ]
 
 #👇 add this only in dev
